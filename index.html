@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reaper.exe</title>
+  <style>
+    body {
+      background-color: #0a0a0a;
+      color: #00ffcc;
+      font-family: 'Courier New', Courier, monospace;
+      padding: 2em;
+      overflow: hidden;
+    }
+    h1 {
+      color: #ff0055;
+      text-shadow: 0 0 10px #ff0055;
+    }
+    .terminal {
+      background-color: #111;
+      padding: 1em;
+      border-radius: 5px;
+      font-size: 1em;
+      line-height: 1.5;
+      white-space: pre-wrap;
+      overflow-y: auto;
+      height: 400px;
+      box-shadow: 0 0 20px #00ffcc44;
+    }
+    #input {
+      border: none;
+      background: none;
+      color: #00ffcc;
+      width: 100%;
+      font-family: inherit;
+      font-size: 1em;
+      outline: none;
+    }
+    .glitch:hover {
+      animation: flicker 0.3s infinite;
+    }
+    @keyframes flicker {
+      0% { opacity: 1; transform: translateX(0); }
+      25% { opacity: 0.7; transform: translateX(-1px); }
+      50% { opacity: 0.3; transform: translateX(2px); }
+      75% { opacity: 0.7; transform: translateX(-1px); }
+      100% { opacity: 1; transform: translateX(0); }
+    }
+    .corrupt {
+      animation: corruptFlicker 0.2s infinite;
+    }
+    @keyframes corruptFlicker {
+      0% { color: #00ffcc; }
+      50% { color: #ff0055; }
+      100% { color: #00ffcc; }
+    }
+  </style>
+</head>
+<body>
+  <h1 class="glitch">Reaper.exe Terminal</h1>
+  <div class="terminal" id="terminal"></div>
+  <input id="input" placeholder="> Enter command..." autofocus />
+
+  <script>
+    const terminal = document.getElementById('terminal');
+    const input = document.getElementById('input');
+
+    const commands = {
+      "run.reap()": "Initializing reaping protocol... Target: Soul ID: 571\n[STATUS] Confirmed.",
+      "decrypt.log": "{ fragment: 'VXNlcm5hbWU6IDVjeXRoZQ==', info: 'Decoded identity. Match found.' }",
+      "corrupt.ui": "[ERROR] UI instability increasing. Visual distortion imminent...",
+      "help": "Available commands: run.reap(), decrypt.log, corrupt.ui, whisper.void(), shadow.trace, override.audio",
+      "whisper.void()": "Echo received: 'they are listening... always listening.'\nResponse channel closing...",
+      "shadow.trace": "Tracing location...\n...\n...\nTarget moving. Trail corrupted.",
+      "override.audio": "Injecting waveform: [AViVA signal signature embedded] — status: hidden"
+    };
+
+    let index = 0;
+    const bootLines = [
+      '> Loading Reaper.exe...',
+      '> Injecting behavior override...',
+      '> Connecting to Host 571...',
+      '> Connection stable. Type "help" to begin.'
+    ];
+
+    function typeLine(line, i = 0, cb) {
+      if (i < line.length) {
+        terminal.innerHTML += line[i];
+        setTimeout(() => typeLine(line, i + 1, cb), 25);
+      } else {
+        terminal.innerHTML += '\n';
+        if (cb) cb();
+      }
+    }
+
+    function bootSequence() {
+      if (index < bootLines.length) {
+        typeLine(bootLines[index++], 0, bootSequence);
+      }
+    }
+
+    input.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') {
+        const cmd = input.value.trim();
+        terminal.innerHTML += `> ${cmd}\n`;
+        if (commands[cmd]) {
+          terminal.innerHTML += `${commands[cmd]}\n`;
+          if (cmd === "corrupt.ui") {
+            document.body.classList.add('corrupt');
+            setTimeout(() => document.body.classList.remove('corrupt'), 2000);
+          }
+        } else {
+          terminal.innerHTML += '[ERROR] Unknown command\n';
+        }
+        input.value = '';
+        terminal.scrollTop = terminal.scrollHeight;
+      }
+    });
+
+    bootSequence();
+  </script>
+</body>
+</html>
